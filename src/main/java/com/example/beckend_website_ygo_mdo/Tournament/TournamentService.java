@@ -32,4 +32,6 @@ public interface TournamentService {
 
     TournamentSummaryDTO getTournamentSummary(Long tournamentId);
 
+    Tournament assignTopPlayers(Long tournamentId, Long top1Id, Long top2Id, Long top3Id);
+
 }

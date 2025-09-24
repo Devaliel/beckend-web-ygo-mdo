@@ -85,26 +85,41 @@ public class TournamentServiceImpl implements TournamentService {
         dto.setName(tournament.getName());
         dto.setFormat(tournament.getFormat());
         dto.setBanlist(tournament.getBanlist());
-
-        // Top 3 duelists based on points
-        List<Duelist> topDuelists = tournament.getPlayers()
-                .stream()
-                .sorted((d1, d2) -> d2.getPoint().compareTo(d1.getPoint()))
-                .limit(3)
-                .toList();
-        dto.setTopDuelists(topDuelists);
-
-        // All matches
+        dto.setTop1(tournament.getTop1());
+        dto.setTop2(tournament.getTop2());
+        dto.setTop3(tournament.getTop3());
         dto.setMatches(tournament.getMatches());
 
-        // All unique decks used in tournament
+        // Collect all unique decks used in matches
         List<Deck> decks = tournament.getMatches().stream()
-                .flatMap(m -> Stream.of(m.getPlayer1Deck(), m.getPlayer2Deck()))
+                .flatMap(m -> List.of(m.getPlayer1Deck(), m.getPlayer2Deck()).stream())
                 .distinct()
                 .toList();
         dto.setDecks(decks);
 
         return dto;
     }
+
+    @Override
+    public Tournament assignTopPlayers(Long tournamentId, Long top1Id, Long top2Id, Long top3Id) {
+        Tournament tournament = tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new RuntimeException("Tournament not found"));
+
+        Duelist top1 = duelistRepository.findById(top1Id)
+                .orElseThrow(() -> new RuntimeException("Top1 Duelist not found"));
+        Duelist top2 = duelistRepository.findById(top2Id)
+                .orElseThrow(() -> new RuntimeException("Top2 Duelist not found"));
+        Duelist top3 = duelistRepository.findById(top3Id)
+                .orElseThrow(() -> new RuntimeException("Top3 Duelist not found"));
+
+        tournament.setTop1(top1);
+        tournament.setTop2(top2);
+        tournament.setTop3(top3);
+
+        return tournamentRepository.save(tournament);
+    }
+
+
+
 
 }

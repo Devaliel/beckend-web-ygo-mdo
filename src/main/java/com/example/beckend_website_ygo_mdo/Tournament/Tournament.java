@@ -32,4 +32,17 @@ public class Tournament {
     // Matches in this tournament
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DuelMatch> matches = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "top1_id")
+    private Duelist top1;
+
+    @ManyToOne
+    @JoinColumn(name = "top2_id")
+    private Duelist top2;
+
+    @ManyToOne
+    @JoinColumn(name = "top3_id")
+    private Duelist top3;
+
 }

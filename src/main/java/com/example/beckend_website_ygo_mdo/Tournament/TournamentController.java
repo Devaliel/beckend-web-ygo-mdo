@@ -66,4 +66,16 @@ public class TournamentController {
     }
 
 
+    @PostMapping("/{id}/top")
+    public Tournament setTopPlayers(
+            @PathVariable Long id,
+            @RequestBody List<Long> topPlayerIds // Expecting exactly 3 IDs
+    ) {
+        if (topPlayerIds.size() != 3) {
+            throw new IllegalArgumentException("You must provide exactly 3 Duelist IDs for top 1-3");
+        }
+        return tournamentService.assignTopPlayers(id, topPlayerIds.get(0), topPlayerIds.get(1), topPlayerIds.get(2));
+    }
+
+
 }
