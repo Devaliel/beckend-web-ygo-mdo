@@ -67,4 +67,15 @@ public class DuelistServiceImpl implements DuelistService {
             );
         }).toList();
     }
+
+    @Override
+    public List<Duelist> getTop3Duelists() {
+        return duelistRepository.findTop3ByOrderByPointDesc();
+    }
+
+    @Override
+    public List<Duelist> getRestDuelists() {
+        List<Duelist> all = duelistRepository.findAllByOrderByPointDesc();
+        return all.size() > 3 ? all.subList(3, all.size()) : List.of();
+    }
 }

@@ -1,6 +1,8 @@
 package com.example.beckend_website_ygo_mdo.Deck;
 
+import com.example.beckend_website_ygo_mdo.Deck.DTO.DeckDTO;
 import com.example.beckend_website_ygo_mdo.Deck.DTO.DeckMatchDTO;
+import com.example.beckend_website_ygo_mdo.Deck.DTO.TierGroupDTO;
 import com.example.beckend_website_ygo_mdo.match.DuelMatch;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,5 +45,15 @@ public class DeckController {
     @GetMapping("/{id}/matches")
     public List<DeckMatchDTO> getDeckMatches(@PathVariable Long id) {
         return deckService.getMatchesForDeck(id);
+    }
+
+    @GetMapping("/api/decks/tierlist")
+    public List<DeckDTO> getDeckTierlist() {
+        return deckService.getDecksWithTier();
+    }
+
+    @GetMapping("/tiers")
+    public List<TierGroupDTO> getDecksGroupedByTier() {
+        return deckService.getDecksGroupedByTier();
     }
 }

@@ -10,4 +10,7 @@ public interface DuelistService {
     Duelist getDuelistById(Long id);                // Read duelist by ID
     List<Duelist> saveAllDuelists(List<Duelist> duelists); // Optional bulk save
     List<DuelistMatchHistoryDTO> getDuelistMatchHistory(Long duelistId);
+
+    List<Duelist> getTop3Duelists();
+    List<Duelist> getRestDuelists();
 }

@@ -44,5 +44,15 @@ public class DuelistController {
         return duelistService.getDuelistMatchHistory(id);
     }
 
+    @GetMapping("/top3")
+    public List<Duelist> getTop3Duelists() {
+        return duelistService.getTop3Duelists();
+    }
+
+    @GetMapping("/rest")
+    public List<Duelist> getRestDuelists() {
+        return duelistService.getRestDuelists();
+    }
+
 
 }
