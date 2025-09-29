@@ -9,8 +9,14 @@ version = '0.0.1-SNAPSHOT'
 description = 'beckend_website_ygo_mdo'
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+    if (System.getenv("RAILWAY_ENVIRONMENT") == null) {
+        // Local development → enforce Java 17
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    } else {
+        // On Railway → use whatever Java Railway provides
+        println "Skipping toolchain config on Railway, using system JDK"
     }
 }
 
