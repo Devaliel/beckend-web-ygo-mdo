@@ -1,7 +1,7 @@
 package com.example.beckend_website_ygo_mdo.duelist;
 
 import com.example.beckend_website_ygo_mdo.Deck.Deck;
-import com.example.beckend_website_ygo_mdo.duelist.DTO.DuelistMatchHistoryDTO;
+import com.example.beckend_website_ygo_mdo.duelist.DTO.*;
 import com.example.beckend_website_ygo_mdo.match.DuelMatch;
 import com.example.beckend_website_ygo_mdo.match.DuelMatchRepository;
 import org.springframework.stereotype.Service;
@@ -78,4 +78,59 @@ public class DuelistServiceImpl implements DuelistService {
         List<Duelist> all = duelistRepository.findAllByOrderByPointDesc();
         return all.size() > 3 ? all.subList(3, all.size()) : List.of();
     }
+
+    @Override
+    public DuelistMatchesResponse getDuelistMatches(Long duelistId) {
+        Duelist duelist = duelistRepository.findById(duelistId)
+                .orElseThrow(() -> new RuntimeException("Duelist not found with id " + duelistId));
+
+        List<DuelMatch> matches = duelMatchRepository
+                .findByPlayer1_IdOrPlayer2_Id(duelistId, duelistId);
+
+        List<DuelistMatchDTO> matchDTOs = matches.stream().map(match -> {
+            boolean isPlayer1 = match.getPlayer1().getId().equals(duelistId);
+
+            DeckInfoDTO playerDeck = isPlayer1
+                    ? new DeckInfoDTO(match.getPlayer1Deck().getName(), match.getPlayer1Deck().getImageUrl())
+                    : new DeckInfoDTO(match.getPlayer2Deck().getName(), match.getPlayer2Deck().getImageUrl());
+
+            String opponentName = isPlayer1 ? match.getPlayer2().getName() : match.getPlayer1().getName();
+
+            DeckInfoDTO opponentDeck = isPlayer1
+                    ? new DeckInfoDTO(match.getPlayer2Deck().getName(), match.getPlayer2Deck().getImageUrl())
+                    : new DeckInfoDTO(match.getPlayer1Deck().getName(), match.getPlayer1Deck().getImageUrl());
+
+            Integer playerScore = isPlayer1 ? match.getPlayer1Score() : match.getPlayer2Score();
+            Integer opponentScore = isPlayer1 ? match.getPlayer2Score() : match.getPlayer1Score();
+
+            return new DuelistMatchDTO(
+                    match.getId(),
+                    match.getRound(),
+                    playerDeck,
+                    opponentName,
+                    opponentDeck,
+                    playerScore,
+                    opponentScore
+            );
+        }).toList();
+
+        DuelistDetailDTO detailDTO = new DuelistDetailDTO(
+                duelist.getId(),
+                duelist.getName(),
+                duelist.getParticipation(),
+                duelist.getTopping(),
+                duelist.getGold(),
+                duelist.getSilver(),
+                duelist.getBronze(),
+                duelist.getWin(),
+                duelist.getDraw(),
+                duelist.getLose(),
+                duelist.getPoint(),
+                duelist.getAvatarUrl()
+        );
+
+        return new DuelistMatchesResponse(detailDTO, matchDTOs);
+    }
+
+
 }

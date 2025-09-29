@@ -1,7 +1,10 @@
 package com.example.beckend_website_ygo_mdo.Tournament;
 
+import com.example.beckend_website_ygo_mdo.Tournament.DTO.TournamentDetailDTO;
+import com.example.beckend_website_ygo_mdo.Tournament.DTO.TournamentListDTO;
 import com.example.beckend_website_ygo_mdo.Tournament.DTO.TournamentSummaryDTO;
 import com.example.beckend_website_ygo_mdo.duelist.Duelist;
+import com.example.beckend_website_ygo_mdo.match.DTO.RoundMatchesDTO;
 import com.example.beckend_website_ygo_mdo.match.DuelMatch;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,10 +58,7 @@ public class TournamentController {
         return tournamentService.getTournamentPlayers(id);
     }
 
-    @GetMapping("/{id}/matches")
-    public List<DuelMatch> getTournamentMatches(@PathVariable Long id) {
-        return tournamentService.getTournamentMatches(id);
-    }
+
 
     @GetMapping("/{id}/summary")
     public TournamentSummaryDTO getTournamentSummary(@PathVariable Long id) {
@@ -76,6 +76,24 @@ public class TournamentController {
         }
         return tournamentService.assignTopPlayers(id, topPlayerIds.get(0), topPlayerIds.get(1), topPlayerIds.get(2));
     }
+
+
+    @GetMapping("/list")
+    public List<TournamentListDTO> getTournamentList() {
+        return tournamentService.getTournamentList();
+    }
+
+    @GetMapping("/{tournamentId}/matches")
+    public List<RoundMatchesDTO> getTournamentMatches(@PathVariable Long tournamentId) {
+        return tournamentService.getTournamentMatches(tournamentId);
+    }
+
+    @GetMapping("/details/{tournamentId}")
+    public TournamentDetailDTO getTournamentDetail(@PathVariable Long tournamentId) {
+        return tournamentService.getTournamentDetail(tournamentId);
+    }
+
+
 
 
 }

@@ -1,6 +1,8 @@
 package com.example.beckend_website_ygo_mdo.duelist;
 
 import com.example.beckend_website_ygo_mdo.duelist.DTO.DuelistMatchHistoryDTO;
+import com.example.beckend_website_ygo_mdo.duelist.DTO.DuelistMatchesResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -53,6 +55,12 @@ public class DuelistController {
     public List<Duelist> getRestDuelists() {
         return duelistService.getRestDuelists();
     }
+
+    @GetMapping("/duelists/{duelistId}/matches")
+    public ResponseEntity<DuelistMatchesResponse> getDuelistMatches(@PathVariable Long duelistId) {
+        return ResponseEntity.ok(duelistService.getDuelistMatches(duelistId));
+    }
+
 
 
 }

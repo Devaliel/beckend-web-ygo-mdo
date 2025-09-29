@@ -1,6 +1,7 @@
 package com.example.beckend_website_ygo_mdo.duelist;
 
 import com.example.beckend_website_ygo_mdo.duelist.DTO.DuelistMatchHistoryDTO;
+import com.example.beckend_website_ygo_mdo.duelist.DTO.DuelistMatchesResponse;
 
 import java.util.List;
 
@@ -13,4 +14,5 @@ public interface DuelistService {
 
     List<Duelist> getTop3Duelists();
     List<Duelist> getRestDuelists();
+    DuelistMatchesResponse getDuelistMatches(Long duelistId);
 }

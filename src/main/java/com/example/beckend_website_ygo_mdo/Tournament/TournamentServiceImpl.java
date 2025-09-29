@@ -1,15 +1,19 @@
 package com.example.beckend_website_ygo_mdo.Tournament;
 
 import com.example.beckend_website_ygo_mdo.Deck.Deck;
+import com.example.beckend_website_ygo_mdo.Tournament.DTO.DuelistDeckDTO;
+import com.example.beckend_website_ygo_mdo.Tournament.DTO.TournamentDetailDTO;
+import com.example.beckend_website_ygo_mdo.Tournament.DTO.TournamentListDTO;
 import com.example.beckend_website_ygo_mdo.Tournament.DTO.TournamentSummaryDTO;
 import com.example.beckend_website_ygo_mdo.duelist.Duelist;
+import com.example.beckend_website_ygo_mdo.match.DTO.RoundMatchesDTO;
 import com.example.beckend_website_ygo_mdo.match.DuelMatch;
 import com.example.beckend_website_ygo_mdo.match.DuelMatchRepository;
 import com.example.beckend_website_ygo_mdo.duelist.DuelistRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -68,12 +72,6 @@ public class TournamentServiceImpl implements TournamentService {
         return tournament.getPlayers(); // assuming a getPlayers() List<Duelist>
     }
 
-    @Override
-    public List<DuelMatch> getTournamentMatches(Long tournamentId) {
-        Tournament tournament = tournamentRepository.findById(tournamentId)
-                .orElseThrow(() -> new RuntimeException("Tournament not found with id " + tournamentId));
-        return tournament.getMatches(); // assuming a getMatches() List<DuelMatch>
-    }
 
     @Override
     public TournamentSummaryDTO getTournamentSummary(Long tournamentId) {
@@ -118,6 +116,75 @@ public class TournamentServiceImpl implements TournamentService {
 
         return tournamentRepository.save(tournament);
     }
+
+    @Override
+    public List<TournamentListDTO> getTournamentList() {
+        List<Tournament> tournaments = tournamentRepository.findAll();
+
+        return tournaments.stream().map(t -> new TournamentListDTO(
+                t.getId(),
+                t.getName(),
+                t.getFormat(),
+                t.getBanlist(),
+                t.getTop1() != null ? t.getTop1().getName() : null,
+                t.getTop2() != null ? t.getTop2().getName() : null,
+                t.getTop3() != null ? t.getTop3().getName() : null
+        )).toList();
+    }
+
+
+    @Override
+    public List<RoundMatchesDTO> getTournamentMatches(Long tournamentId) {
+        Tournament tournament = tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new RuntimeException("Tournament not found with id " + tournamentId));
+
+        List<DuelMatch> matches = tournament.getMatches();
+
+        // group by round
+        Map<String, List<DuelMatch>> grouped = matches.stream()
+                .collect(Collectors.groupingBy(DuelMatch::getRound));
+
+        // convert to DTOs
+        return grouped.entrySet().stream()
+                .map(entry -> new RoundMatchesDTO(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(RoundMatchesDTO::getRound)) // optional: sort rounds
+                .toList();
+    }
+
+    @Override
+    public TournamentDetailDTO getTournamentDetail(Long tournamentId) {
+        Tournament tournament = tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new RuntimeException("Tournament not found with id " + tournamentId));
+
+        // Use a map to prevent duplicate duelist entries
+        Map<Long, DuelistDeckDTO> participantMap = new HashMap<>();
+
+        for (DuelMatch match : tournament.getMatches()) {
+            if (match.getPlayer1() != null && match.getPlayer1Deck() != null) {
+                participantMap.putIfAbsent(
+                        match.getPlayer1().getId(),
+                        new DuelistDeckDTO(match.getPlayer1().getName(), match.getPlayer1Deck().getName())
+                );
+            }
+
+            if (match.getPlayer2() != null && match.getPlayer2Deck() != null) {
+                participantMap.putIfAbsent(
+                        match.getPlayer2().getId(),
+                        new DuelistDeckDTO(match.getPlayer2().getName(), match.getPlayer2Deck().getName())
+                );
+            }
+        }
+
+        return new TournamentDetailDTO(
+                tournament.getId(),
+                tournament.getName(),
+                tournament.getFormat(),
+                new ArrayList<>(participantMap.values())
+        );
+    }
+
+
+
 
 
 
