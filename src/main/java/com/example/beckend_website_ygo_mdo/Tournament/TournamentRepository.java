@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TournamentRepository extends JpaRepository<Tournament, Long> {
-    // You can add custom queries here if needed later
+    // You can add custom queries here if needed laterr
 }
