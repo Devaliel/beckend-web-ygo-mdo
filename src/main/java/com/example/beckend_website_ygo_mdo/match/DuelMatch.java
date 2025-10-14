@@ -32,7 +32,7 @@ public class DuelMatch {
     @JoinColumn(name = "player2_id")
     private Duelist player2;
 
-    // Decks used
+    // Decks used add
     @ManyToOne
     @JoinColumn(name = "player1_deck_id")
     private Deck player1Deck;
