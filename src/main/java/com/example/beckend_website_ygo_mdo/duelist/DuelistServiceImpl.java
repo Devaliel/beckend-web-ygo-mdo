@@ -6,6 +6,7 @@ import com.example.beckend_website_ygo_mdo.match.DuelMatch;
 import com.example.beckend_website_ygo_mdo.match.DuelMatchRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DuelistServiceImpl implements DuelistService {
@@ -130,6 +131,24 @@ public class DuelistServiceImpl implements DuelistService {
         );
 
         return new DuelistMatchesResponse(detailDTO, matchDTOs);
+    }
+
+    @Override
+    public List<DuelistDeckStatsDTO> getDuelistDeckStats(Long duelistId) {
+        List<Object[]> results = duelistRepository.findDeckStatsByDuelistId(duelistId);
+
+        return results.stream()
+                .map(obj -> new DuelistDeckStatsDTO(
+                        ((Number) obj[0]).longValue(),
+                        (String) obj[1],
+                        ((Number) obj[2]).longValue(),
+                        (String) obj[3],
+                        ((Number) obj[4]).intValue(),
+                        ((Number) obj[5]).intValue(),
+                        ((Number) obj[6]).intValue(),
+                        ((Number) obj[7]).intValue()
+                ))
+                .collect(Collectors.toList());
     }
 
 

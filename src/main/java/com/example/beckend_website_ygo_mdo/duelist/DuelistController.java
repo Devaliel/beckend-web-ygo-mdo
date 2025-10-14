@@ -1,5 +1,6 @@
 package com.example.beckend_website_ygo_mdo.duelist;
 
+import com.example.beckend_website_ygo_mdo.duelist.DTO.DuelistDeckStatsDTO;
 import com.example.beckend_website_ygo_mdo.duelist.DTO.DuelistMatchHistoryDTO;
 import com.example.beckend_website_ygo_mdo.duelist.DTO.DuelistMatchesResponse;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +61,12 @@ public class DuelistController {
     public ResponseEntity<DuelistMatchesResponse> getDuelistMatches(@PathVariable Long duelistId) {
         return ResponseEntity.ok(duelistService.getDuelistMatches(duelistId));
     }
+
+    @GetMapping("/{id}/deck-stats")
+    public List<DuelistDeckStatsDTO> getDuelistDeckStats(@PathVariable Long id) {
+        return duelistService.getDuelistDeckStats(id);
+    }
+
 
 
 
