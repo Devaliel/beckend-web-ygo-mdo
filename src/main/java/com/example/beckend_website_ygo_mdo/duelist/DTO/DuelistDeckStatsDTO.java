@@ -16,4 +16,5 @@ public class DuelistDeckStatsDTO {
     private Integer wins;
     private Integer losses;
     private Integer draws;
+
 }
