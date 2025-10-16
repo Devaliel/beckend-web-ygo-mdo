@@ -132,7 +132,7 @@ public class DuelistServiceImpl implements DuelistService {
 
         return new DuelistMatchesResponse(detailDTO, matchDTOs);
     }
-//add new deck stats
+//add new deck stats add
     @Override
     public List<DuelistDeckStatsDTO> getDuelistDeckStats(Long duelistId) {
         List<Object[]> results = duelistRepository.findDeckStatsByDuelistId(duelistId);
